@@ -1,0 +1,33 @@
+name: Daily PubMed Paper Extractor
+
+on:
+  schedule:
+    # Runs daily at 06:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  run-extractor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/python-version@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run PubMed Extraction Script
+        env:
+          NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+        run: python fetch_pubmed.py
+
+      - name: Upload CSV Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pubmed-csv-report
+          path: '*.csv'
+          retention-days: 30
