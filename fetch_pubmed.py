@@ -77,8 +77,11 @@ def fetch_paper_details(id_list):
     for article in root.findall(".//PubmedArticle"):
         pmid = article.findtext(".//PMID")
         
-        # Extract Title
+        # Extract Paper Title
         title = article.findtext(".//ArticleTitle") or "No title available"
+
+        # Extract Journal Title
+        journal = article.findtext(".//Journal/Title") or "No journal available"
         
         # Extract Abstract
         abstract_texts = article.findall(".//AbstractText")
@@ -97,6 +100,7 @@ def fetch_paper_details(id_list):
         papers.append({
             "PMID": pmid,
             "Title": title.strip(),
+            "Journal": journal.strip(),
             "Abstract": abstract.strip(),
             "Publication_Date": date_str,
             "PubMed_URL": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
@@ -105,7 +109,7 @@ def fetch_paper_details(id_list):
     return papers
 
 def save_to_csv(papers, filename):
-    fieldnames = ["PMID", "Title", "Abstract", "Publication_Date", "PubMed_URL"]
+    fieldnames = ["PMID", "Title", "Journal", "Abstract", "Publication_Date", "PubMed_URL"]
     with open(filename, mode="w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
