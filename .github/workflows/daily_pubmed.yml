@@ -23,6 +23,7 @@ jobs:
         env:
           NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
         run: python fetch_pubmed.py
 
       - name: Upload CSV Artifact
